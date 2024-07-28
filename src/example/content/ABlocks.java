@@ -49,8 +49,6 @@ public class ABlocks {
       speedMultiplier = 0.3f;
       emitLight = true;
       lightRadius = 30f;
-      lightColor = Color.valueOf("#c24a2f");
-      attributes.set(Attribute.neoplasm, 1f);
-    }};
+      lightColor = Color.valueOf("#c24a2f")
   }
 }
