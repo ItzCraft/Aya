@@ -50,5 +50,6 @@ public class ABlocks {
       emitLight = true;
       lightRadius = 30f;
       lightColor = Color.valueOf("#c24a2f");
+   }};
   }
 }
