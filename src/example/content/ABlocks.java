@@ -40,17 +40,17 @@ import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class ABlocks {
-  public static Block neoplasticFloor;
+  public static Block neoplasmFloor;
 
   public static void load(){
-    neoplasticFloor = new Floor("neoplasticFloor"){{
+    neoplasmFloor = new Floor("neoplasm-floor"){{
       variants = 0;
       isLiquid = true;
       speedMultiplier = 0.3f;
       emitLight = true;
       lightRadius = 30f;
       lightColor = Color.valueOf("#c24a2f");
-      attributes.set(Attribute.neoplastic, 1f);
+      attributes.set(Attribute.neoplasm, 1f);
     }};
   }
 }
