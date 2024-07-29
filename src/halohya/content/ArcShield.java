@@ -1,36 +1,22 @@
 package halohya.content;
 
-
-import arc.*;
-import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.util.*;
-import arc.util.io.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.game.EventType.*;
-import mindustry.game.*;
+import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.ui.*;
-import mindustry.world.*;
-import mindustry.world.consumers.*;
-import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.BaseShield;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.player;
 
-public class ArcShield extends ForceProjector {
+public class ArcShield extends BaseShield {
     public float angle = 45f; // Угол арки в градусах
     public float radius = 15f * tilesize; // Радиус арки в пикселях
 
     public ArcShield(String name){
         super(name);
-        radius = 13f * tilesize; // Перевод радиуса из блоков в пиксели
-        update = solid = true;
+        radius = 15f * tilesize; // Перевод радиуса из блоков в пиксели
     }
 
     @Override
@@ -58,15 +44,22 @@ public class ArcShield extends ForceProjector {
         Draw.reset();
     }
 
-    public class ArcShieldBuild extends ForceBuild {
+    public class ArcShieldBuild extends BaseShieldBuild{
+        @Override
+        public void draw(){
+            super.draw();
+            drawArc(x, y, radius(), angle, team.color);
+        }
+
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
+            drawArc(x, y, radius(), angle, team.color);
+        }
+
         @Override
         public void updateTile(){
             super.updateTile();
-        }
-        @Override
-        public void drawShield(){
-            super.drawShield();
-            drawArc(x * tilesize + offset, y * tilesize + offset, radius, angle, player.team().color);
         }
     }
 }
