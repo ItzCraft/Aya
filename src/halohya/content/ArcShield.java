@@ -1,31 +1,40 @@
 package halohya.content;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import mindustry.content.Blocks;
+import mindustry.gen.Building;
+import mindustry.gen.Team;
+import mindustry.graphics.Pal;
+import mindustry.graphics.Draw;
+import mindustry.graphics.g3d.ShadowBatch;
+import mindustry.ui.Bar;
+import mindustry.world.Block;
+import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.ForceProjector.ForceBuild;
+import mindustry.world.blocks.defense.ForceProjector.ForceBuild;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.Stats;
 import arc.math.Mathf;
-import arc.math.geom.*;
-import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.game.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
-
-import static mindustry.Vars.*;
+import arc.util.ArcAnnotate;
+import arc.util.Intervals;
+import arc.util.Angles;
+import arc.struct.Array;
+import arc.struct.IntSeq;
+import arc.math.geom.Geometry;
+import arc.graphics.Color;
 
 public class ArcShield extends ForceProjector {
-    public float arcAngle = 45f; // Угол арки в градусах
 
     public ArcShield(String name){
         super(name);
+        // Установите свойства вашего блока, если нужно
         this.radius = 15f * tilesize; // Примерный радиус
         this.shieldHealth = 1000f; // Примерное здоровье щита
         this.shieldRotation = 0f;
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(float x, float y, float rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
         drawArc(x * tilesize + offset, y * tilesize + offset, radius, arcAngle, player.team().color);
     }
@@ -39,7 +48,7 @@ public class ArcShield extends ForceProjector {
     @Override
     public void setBars(){
         super.setBars();
-        addBar("shield", (ForceBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, 
+        addBar("shield", (ForceBuild entity) -> new Bar("stat.shieldhealth", Pal.accent,
             () -> entity.broken ? 0f : 1f - entity.buildup / (shieldHealth + phaseShieldBoost * entity.phaseHeat)).blink(Color.white));
     }
 
@@ -50,7 +59,7 @@ public class ArcShield extends ForceProjector {
     }
 
     @Override
-    public void draw() {
+    public void draw(){
         super.draw();
         if (Groups.build.size > 0){
             Draw.color(team.color, Color.white, Mathf.clamp(hit));
@@ -58,43 +67,43 @@ public class ArcShield extends ForceProjector {
         }
     }
 
-    public void drawArc(float x, float y, float radius, float angle, Color color){
-        Draw.color(color, 0.3f);
-        Lines.stroke(1.5f);
-        float step = 1f; // Шаг в градусах для рисования арки (пасиба чату джпт) 
-        for (float i = -angle / 2; i <= angle / 2; i += step){
-            float rad = Mathf.degRad * i;
-            float xOffset = Angles.trnsx(rad, radius);
-            float yOffset = Angles.trnsy(rad, radius);
-            Lines.lineAngle(x + xOffset, y + yOffset, rad, step * Mathf.degRad * radius);
-        }
-        Draw.reset();
+    @Override
+    public void updateTile(){
+        super.updateTile();
     }
 
-    public class ArcShieldBuild extends ForceBuild{
+    @Override
+    public void draw(){
+        super.draw();
+        float realRadius = realRadius();
+        if (realRadius > 0 && !broken){
+            paramEntity = this;
+            paramEffect = absorbEffect;
+            Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
+        }
+    }
+
+    public class ArcShieldBuild extends ForceBuild {
         @Override
         public void draw(){
             super.draw();
-            if (!broken) {
+            if (!broken){
                 float realRadius = realRadius();
-                if (realRadius > 0.001f){
-                    Draw.color(team.color, Color.white, Mathf.clamp(hit));
-                    Draw.z(Layer.shields);
-                    drawArc(x, y, realRadius, arcAngle, team.color);
-                }
+                Draw.color(team.color, Color.white, Mathf.clamp(hit));
+                drawArc(x, y, realRadius, arcAngle, team.color);
             }
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
-            deflectBullets();
         }
 
         @Override
-        public void deflectBullets(){
+        public void draw(){
+            super.draw();
             float realRadius = realRadius();
-            if (realRadius > 0 && !broken) {
+            if (realRadius > 0 && !broken){
                 paramEntity = this;
                 paramEffect = absorbEffect;
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
