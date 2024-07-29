@@ -1,54 +1,65 @@
 package halohya.content;
 
-import mindustry.gen.Team;
-import mindustry.graphics.Draw;
-import mindustry.graphics.g3d.ShadowBatch;
-import arc.util.Angles;
-import arc.util.Mathf;
-import arc.struct.Array;
-import arc.graphics.Color;
-import mindustry.entities.Building;
-import mindustry.entities.type.TileEntity;
-import mindustry.world.Tile;
-import mindustry.world.blocks.storage.StorageBlock;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.Shield;
-import mindustry.world.blocks.defense.Shield.ShieldBuild;
+import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.graphics.g2d.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.world.blocks.defense.BaseShield;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.player;
 
-public class ArcShield extends Shield {
-    public float radius = 15f; // Радиус арки
-    public float arcAngle = 45f; // Угол арки
+public class ArcShield extends BaseShield {
+    public float angle = 45f; // Угол арки в градусах
+    public float radius = 15f * tilesize; // Радиус арки в пикселях
 
     public ArcShield(String name){
         super(name);
-        // Конструктор по умолчанию
+        radius = 15f * tilesize; // Перевод радиуса из блоков в пиксели
     }
 
     @Override
-    public void drawPlace(float x, float y, float rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
-        Draw.color(Color.white);
-        drawArc(x * tilesize, y * tilesize, radius, arcAngle, team.color);
+        drawArc(x * tilesize + offset, y * tilesize + offset, radius, angle, player.team().color);
     }
 
-    private void drawArc(float x, float y, float radius, float angle, Color color){
-        // Отрисовка арки
-        Draw.color(color);
-        Draw.arc(x, y, radius, 0, angle);
+    @Override
+    public void init(){
+        super.init();
+        updateClipRadius(radius);
     }
 
-    public class ArcShieldBuild extends ShieldBuild {
+    public void drawArc(float x, float y, float radius, float angle, Color color){
+        Draw.color(color, 0.3f);
+        Lines.stroke(1.5f);
+        float increment = 1f; // Шаг в градусах (пасиба чату джпт)
+        for (float i = -angle / 2; i <= angle / 2; i += increment){
+            float rad = Mathf.degRad * i;
+            float xOffset = Angles.trnsx(rad, radius);
+            float yOffset = Angles.trnsy(rad, radius);
+            Lines.lineAngle(x + xOffset, y + yOffset, rad, increment * Mathf.degRad * radius);
+        }
+        Draw.reset();
+    }
+
+    public class ArcShieldBuild extends BaseShieldBuild{
         @Override
         public void draw(){
             super.draw();
-            Draw.color(team.color);
-            drawArc(x, y, radius, arcAngle, team.color);
+            drawArc(x, y, radius(), angle, team.color);
         }
-        
+
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
+            drawArc(x, y, radius(), angle, team.color);
+        }
+
         @Override
         public void updateTile(){
             super.updateTile();
-            // Обновление состояния
         }
     }
 }
