@@ -34,7 +34,7 @@ public class ArcShield extends BaseShield {
     public void drawArc(float x, float y, float radius, float angle, Color color){
         Draw.color(color, 0.3f);
         Lines.stroke(1.5f);
-        float increment = 1f; // Шаг в градусах
+        float increment = 1f; // Шаг в градусах (пасиба чату джпт)
         for (float i = -angle / 2; i <= angle / 2; i += increment){
             float rad = Mathf.degRad * i;
             float xOffset = Angles.trnsx(rad, radius);
@@ -60,7 +60,6 @@ public class ArcShield extends BaseShield {
         @Override
         public void updateTile(){
             super.updateTile();
-            // Дополнительная логика для ArcShield, если необходимо
         }
     }
 }
