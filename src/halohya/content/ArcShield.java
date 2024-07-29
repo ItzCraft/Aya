@@ -2,9 +2,13 @@ package halohya.content;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.BaseShield;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.player;
 
 public class ArcShield extends BaseShield {
     public float angle = 45f; // Угол арки в градусах
