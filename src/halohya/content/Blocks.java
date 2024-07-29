@@ -58,6 +58,7 @@ public class Blocks {
             attributes.set(Meow.neoplasmic, 1f);
         }};
         gr = new ArcShield("arc-shield"){{
+            requirements(Category.defense, with(Items.copper, 1));
             health = 100;
             size = 3;
             shieldHealth = 1350f;
