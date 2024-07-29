@@ -8,7 +8,7 @@ name: "aya"
 author: "You"
 
 #the fully qualified main class of the mod
-main: "example.ExampleJavaMod"
+main: "halohya.halo"
 
 #the mod description as seen in the mod dialog
 description: "специальные фигни или тесты"
