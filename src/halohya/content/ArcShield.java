@@ -66,20 +66,8 @@ public class ArcShield extends ForceProjector {
         }
         @Override
         public void drawShield(){
-            if(!broken){
-                float radius = realRadius();
-
-                if(radius > 0.001f){
-                    Draw.color(team.color, Color.white, Mathf.clamp(hit));
-
-                    if(renderer.animateShields){
-                        Draw.z(Layer.shields + 0.001f * hit);
-                        Fill.poly(x, y, sides, radius, shieldRotation);
-                    }else{
-                        drawArc(x * tilesize + offset, y * tilesize + offset, radius, angle, player.team().color);
-                   }
-               }
-            }
+            super.drawShield();
+            drawArc(x * tilesize + offset, y * tilesize + offset, radius, angle, player.team().color);
         }
     }
 }
