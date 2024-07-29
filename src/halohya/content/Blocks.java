@@ -60,6 +60,11 @@ public class Blocks {
         gr = new ArcShield("arc-shield"){{
             health = 100;
             size = 3;
+            shieldHealth = 1350f;
+            cooldownNormal = 1f;
+            cooldownLiquid = 0.5f;
+            cooldownBrokenBase = 0.65f;
+            consumePower(6f);
         }};
         gr.init();
     }
