@@ -17,7 +17,7 @@ import static mindustry.type.ItemStack.with;
 
 public class Blocks {
     public static Block
-    a,b,c,e,gr;
+    a,b,c,e;
     public static void load(){
         a = new LiquidStackConveyor("fff"){{
             requirements(Category.distribution, with(Items.surgeAlloy, 1, Items.tungsten, 1));
@@ -57,16 +57,5 @@ public class Blocks {
         e = new Floor("1"){{
             attributes.set(Meow.neoplasmic, 1f);
         }};
-        gr = new ArcShield("arc-shield"){{
-            requirements(Category.defense, with(Items.copper, 1));
-            health = 100;
-            size = 3;
-            shieldHealth = 1350f;
-            cooldownNormal = 1f;
-            cooldownLiquid = 0.5f;
-            cooldownBrokenBase = 0.65f;
-            consumePower(6f);
-        }};
-        gr.init();
     }
 }
